@@ -1,6 +1,18 @@
 var studentsList = [
-  { name: "Ahmed", age: 25, id: 123 },
-  { name: "Ali", age: 30, id: 345 },
+  {
+    fullName: "Ahmed",
+    subjects: ["french", "math", "Science"],
+    dateOfBirth: "03/08/1991",
+    subscriptionStatus: "paid",
+    id: 123,
+  },
+  {
+    fullName: "djef",
+    subjects: ["french"],
+    dateOfBirth: "12/11/1998",
+    subscriptionStatus: "expired",
+    id: 143,
+  },
 ];
 
 const getStudents = async (req, res) => {
@@ -38,8 +50,6 @@ const getStudentbyId = async (req, res) => {
 
 //delete a product
 const deleteStudent = async (req, res) => {
-  console.log("delete request not recieved");
-
   const { id } = req.params;
   console.log("id", id);
 
@@ -71,15 +81,21 @@ const updateStudent = async (req, res) => {
     if (!toBeUpdatedStudent) {
       return res.status(404).json({ err: "Student not Found!" });
     }
-    if (update.name) {
-      toBeUpdatedStudent.name = update.name;
+    if (update.fullName) {
+      toBeUpdatedStudent.fullName = update.namfullNamee;
     }
 
-    if (update.age) {
-      toBeUpdatedStudent.age = update.age;
+    if (update.subjects) {
+      toBeUpdatedStudent.subjects = update.subjects;
+    }
+    if (update.dateOfBirth) {
+      toBeUpdatedStudent.dateOfBirth = update.dateOfBirth;
+    }
+    if (update.subscriptionStatus) {
+      toBeUpdatedStudent.subscriptionStatus = update.subscriptionStatus;
     }
     console.log("updated product", toBeUpdatedStudent);
-    return res.status(200).json(toBeUpdatedStudent);
+    return res.status(200).json(studentsList);
   } catch (err) {
     res.status(400).json({ err: true, message: err.message });
   }
