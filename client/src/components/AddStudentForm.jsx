@@ -42,6 +42,7 @@ import { useContext, useState } from "react";
 import { GlobalState } from "../contexts/GlobalStateContext";
 import { toast } from "./ui/use-toast";
 
+// Define the list of items for the subjects
 const items = [
   {
     id: "mathematics",
@@ -65,6 +66,7 @@ const items = [
   },
 ];
 
+// Define the validation schema for the form fields
 const formSchema = z.object({
   fullName: z.string({ required_error: "Full Name is required" }).min({
     message: "Must be 5 or more characters long",
@@ -78,11 +80,16 @@ const formSchema = z.object({
   }),
 });
 
+// Functional component for the Add Student form
 const AddStudentForm = ({ setStudents, setOpen }) => {
+  // State for managing the calendar popover
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+
+  // Context for managing global state
   const { setIsLoading, setIsError, setError, setIsSuccess } =
     useContext(GlobalState);
 
+  // Form management using React Hook Form
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -94,6 +101,7 @@ const AddStudentForm = ({ setStudents, setOpen }) => {
     },
   });
 
+  // Function to handle form submission
   function onSubmit(values) {
     setIsLoading(true);
     values.dateOfBirth = format(values.dateOfBirth, "yyyy-MM-dd");
@@ -121,7 +129,7 @@ const AddStudentForm = ({ setStudents, setOpen }) => {
         setIsSuccess(true);
         toast({
           title: "Success",
-          description: "Student added seccusfully",
+          description: "Student added successfully",
         });
       })
       .catch((error) => {
@@ -134,6 +142,8 @@ const AddStudentForm = ({ setStudents, setOpen }) => {
         });
       });
   }
+
+  // Render the Add Student form
 
   return (
     <DialogContent className="sm:max-w-[425px]">

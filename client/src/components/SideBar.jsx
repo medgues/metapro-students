@@ -32,6 +32,7 @@ const SideBar = () => {
 
 export default SideBar;
 
+// SVG icon components
 function HomeIcon(props) {
   return (
     <svg

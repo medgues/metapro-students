@@ -1,4 +1,6 @@
-/* eslint-disable react/prop-types */
+/* eslint-disable react/prop-types */ // Disabling prop-types linting as it's not used in this file
+
+// Importing necessary components and utilities
 import { Input } from "../components/ui/input";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "lucide-react";
@@ -36,12 +38,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../components/ui/select";
+
+// Importing store and necessary slices
 import store from "../store/store";
 import { studentsList } from "../store/slices/globaleStateSlice";
+
+// Importing necessary hooks and contexts
 import { useContext, useEffect, useState } from "react";
 import { GlobalState } from "../contexts/GlobalStateContext";
+
+// Importing toast utility
 import { toast } from "./ui/use-toast";
 
+// Array of subject items
 const items = [
   {
     id: "mathematics",
@@ -65,6 +74,7 @@ const items = [
   },
 ];
 
+// Zod schema for form validation
 const formSchema = z.object({
   fullName: z.string({ required_error: "Full Name is required" }).min({
     message: "Must be 5 or more characters long",
@@ -78,20 +88,26 @@ const formSchema = z.object({
   }),
 });
 
+// EditStudentForm component
 const EditStudentForm = ({ setStudents, setOpen, student }) => {
+  // State variables and context
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const { setIsLoading, setIsError, setError, setIsSuccess } =
     useContext(GlobalState);
 
+  // Form hook initialization
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: student,
   });
+
+  // Resetting form values on student change
   useEffect(() => {
     form.reset({ ...student, dateOfBirth: new Date(student.dateOfBirth) });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [student]);
 
+  // Form submit handler
   function onSubmit(values) {
     setIsLoading(true);
     values.dateOfBirth = format(values.dateOfBirth, "yyyy-MM-dd");
