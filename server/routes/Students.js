@@ -3,7 +3,7 @@ const router = express.Router();
 const {
   getStudents,
   createStudent,
-  getStudentbyId,
+  getStudentById,
   deleteStudent,
   updateStudent,
 } = require("../controllers/StudentsController");
@@ -14,7 +14,7 @@ router.get("/", getStudents);
 router.post("/", createStudent);
 
 //get student  by id
-router.get("/student/:id", getStudentbyId);
+router.get("/student/:id", getStudentById);
 
 //delete student  by id
 router.delete("/:id", deleteStudent);

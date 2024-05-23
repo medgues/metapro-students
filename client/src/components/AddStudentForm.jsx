@@ -38,7 +38,9 @@ import {
 } from "../components/ui/select";
 import store from "../store/store";
 import { studentsList } from "../store/slices/globaleStateSlice";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { GlobalState } from "../contexts/GlobalStateContext";
+import { toast } from "./ui/use-toast";
 
 const items = [
   {
@@ -78,6 +80,8 @@ const formSchema = z.object({
 
 const AddStudentForm = ({ setStudents, setOpen }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const { setIsLoading, setIsError, setError, setIsSuccess } =
+    useContext(GlobalState);
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -91,6 +95,7 @@ const AddStudentForm = ({ setStudents, setOpen }) => {
   });
 
   function onSubmit(values) {
+    setIsLoading(true);
     values.dateOfBirth = format(values.dateOfBirth, "yyyy-MM-dd");
     values.id = Math.round(Math.random() * (10000 - 10) + 10);
     fetch("http://localhost:2000/api/students/", {
@@ -112,6 +117,21 @@ const AddStudentForm = ({ setStudents, setOpen }) => {
           id: "",
         });
         setOpen(false);
+        setIsLoading(false);
+        setIsSuccess(true);
+        toast({
+          title: "Success",
+          description: "Student added seccusfully",
+        });
+      })
+      .catch((error) => {
+        setIsError(true);
+        setError(error.message);
+        setIsLoading(false);
+        toast({
+          title: "error",
+          description: error.message,
+        });
       });
   }
 

@@ -38,7 +38,9 @@ import {
 } from "../components/ui/select";
 import store from "../store/store";
 import { studentsList } from "../store/slices/globaleStateSlice";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { GlobalState } from "../contexts/GlobalStateContext";
+import { toast } from "./ui/use-toast";
 
 const items = [
   {
@@ -76,19 +78,25 @@ const formSchema = z.object({
   }),
 });
 
-const EditStudentForm = ({ setStudents, setOpen, student, setDialog }) => {
+const EditStudentForm = ({ setStudents, setOpen, student }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
-  console.log(student);
+  const { setIsLoading, setIsError, setError, setIsSuccess } =
+    useContext(GlobalState);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: student,
   });
+  useEffect(() => {
+    form.reset({ ...student, dateOfBirth: new Date(student.dateOfBirth) });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [student]);
 
   function onSubmit(values) {
+    setIsLoading(true);
     values.dateOfBirth = format(values.dateOfBirth, "yyyy-MM-dd");
-    const id = student.id;
-
-    fetch(`http://localhost:2000/api/students/${id}`, {
+    console.log("submited values", values);
+    fetch(`http://localhost:2000/api/students/${student.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -107,6 +115,21 @@ const EditStudentForm = ({ setStudents, setOpen, student, setDialog }) => {
           id: "",
         });
         setOpen(false);
+        setIsLoading(false);
+        setIsSuccess(true);
+        toast({
+          title: "success",
+          description: "Student Info Updated seccusfully",
+        });
+      })
+      .catch((error) => {
+        setIsError(true);
+        setError(error.message);
+        setIsLoading(false);
+        toast({
+          title: "error",
+          description: error.message,
+        });
       });
   }
 
@@ -130,7 +153,11 @@ const EditStudentForm = ({ setStudents, setOpen, student, setDialog }) => {
                   <FormItem className="col-span-4">
                     <FormLabel className="text-right">Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder={student.fullName} {...field} />
+                      <Input
+                        placeholder={student.fullName}
+                        value={field.value}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -160,7 +187,7 @@ const EditStudentForm = ({ setStudents, setOpen, student, setDialog }) => {
                             {field.value ? (
                               format(field.value, "MM/dd/yyyy")
                             ) : (
-                              <span>{student.dateOfBirth}</span>
+                              <span>Pick A Date</span>
                             )}
                             <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                           </Button>
@@ -244,7 +271,7 @@ const EditStudentForm = ({ setStudents, setOpen, student, setDialog }) => {
                     <FormLabel>Subscription Status</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={student.subscriptionStatus}
+                      defaultValue={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>
@@ -264,7 +291,7 @@ const EditStudentForm = ({ setStudents, setOpen, student, setDialog }) => {
               />
             </div>
             <DialogFooter>
-              <Button type="submit">Add Student</Button>
+              <Button type="submit">Update Student</Button>
             </DialogFooter>
           </form>
         </Form>

@@ -35,7 +35,7 @@ const createStudent = async (req, res) => {
   }
 };
 //get student by id
-const getStudentbyId = async (req, res) => {
+const getStudentById = async (req, res) => {
   const { id } = req.params;
   console.log("id", id);
   try {
@@ -82,7 +82,7 @@ const updateStudent = async (req, res) => {
       return res.status(404).json({ err: "Student not Found!" });
     }
     if (update.fullName) {
-      toBeUpdatedStudent.fullName = update.namfullNamee;
+      toBeUpdatedStudent.fullName = update.fullName;
     }
 
     if (update.subjects) {
@@ -94,7 +94,7 @@ const updateStudent = async (req, res) => {
     if (update.subscriptionStatus) {
       toBeUpdatedStudent.subscriptionStatus = update.subscriptionStatus;
     }
-    console.log("updated product", toBeUpdatedStudent);
+    console.log("updated Student", toBeUpdatedStudent);
     return res.status(200).json(studentsList);
   } catch (err) {
     res.status(400).json({ err: true, message: err.message });
@@ -104,7 +104,7 @@ const updateStudent = async (req, res) => {
 module.exports = {
   getStudents,
   createStudent,
-  getStudentbyId,
+  getStudentById,
   deleteStudent,
   updateStudent,
 };

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { lazy, useContext, useEffect, useState } from "react";
 import { Button } from "../components/ui/button";
-
 import { DialogTrigger, Dialog } from "../components/ui/dialog";
 import {
   TableHead,
@@ -13,28 +12,36 @@ import {
 import AddStudentForm from "./AddStudentForm";
 import store from "../store/store";
 import { studentsList } from "../store/slices/globaleStateSlice";
-import EditStudentForm from "./EditStudentForm";
+import { GlobalState } from "../contexts/GlobalStateContext";
+import { toast } from "./ui/use-toast";
+const EditStudentForm = lazy(() => import("./EditStudentForm"));
+
 const StudentsTable = () => {
   const [students, setStudents] = useState([]);
   const [open, setOpen] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [dialog, setDialog] = useState();
-  useEffect(() => {
-    console.log("dialog", dialog);
-  }, [dialog]);
+  const { setIsLoading, setIsError, setError, setIsSuccess } =
+    useContext(GlobalState);
 
   useEffect(() => {
+    setIsLoading(true);
     fetch("http://localhost:2000/api/students/")
       .then((response) => response.json())
       .then((data) => {
         setStudents(data);
         store.dispatch(studentsList([...data]));
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsError(true);
+        setError(error.message);
+        setIsLoading(false);
       });
-    //   .catch((error) => {
-    //     // Handle errors
-    //   });
   }, []);
-  const deletStudent = (id) => {
+
+  const deleteStudent = (id) => {
+    setIsLoading(true);
     fetch(`http://localhost:2000/api/students/${id}`, {
       method: "DELETE",
       headers: {
@@ -45,6 +52,21 @@ const StudentsTable = () => {
       .then((data) => {
         setStudents(data.studentsList);
         store.dispatch(studentsList(data.studentsList));
+        setIsLoading(false);
+        setIsSuccess(true);
+        toast({
+          title: "sucess",
+          description: "Student deleted seccusfully",
+        });
+      })
+      .catch((error) => {
+        setIsError(true);
+        setError(error.message);
+        setIsLoading(false);
+        toast({
+          title: "error",
+          description: error.message,
+        });
       });
   };
   return (
@@ -90,7 +112,7 @@ const StudentsTable = () => {
                     <DialogTrigger
                       asChild
                       onClick={() => {
-                        setDialog(student.id);
+                        setDialog(student);
                       }}
                     >
                       <Button className="mr-2" size="sm" variant="outline">
@@ -98,7 +120,7 @@ const StudentsTable = () => {
                       </Button>
                     </DialogTrigger>
                     <Button
-                      onClick={() => deletStudent(student?.id)}
+                      onClick={() => deleteStudent(student?.id)}
                       className="text-red-500"
                       size="sm"
                       variant="outline"
@@ -107,22 +129,20 @@ const StudentsTable = () => {
                     </Button>
                   </TableCell>
                 </TableRow>
-              ))}{" "}
+              ))}
               <EditStudentForm
                 setOpen={setOpenEditDialog}
                 setStudents={setStudents}
                 student={
-                  dialog
-                    ? students.filter((student) => student.id === dialog)[0]
-                    : {
-                        fullName: "",
-                        dateOfBirth: "",
-                        subjects: [],
-                        subscriptionStatus: "",
-                        id: "",
-                      }
+                  dialog || {
+                    fullName: "",
+                    dateOfBirth: "",
+                    subjects: [],
+                    subscriptionStatus: "",
+                    id: "",
+                  }
                 }
-              />{" "}
+              />
             </Dialog>
           </TableBody>
         </Table>

@@ -1,6 +1,7 @@
 import SideBar from "../components/SideBar";
 import Header from "../components/Header";
 import StudentsTable from "../components/StudentsTable";
+import { Toaster } from "../components/ui/toaster";
 
 export default function Component() {
   return (
@@ -11,6 +12,7 @@ export default function Component() {
       <div className="flex flex-col ">
         <Header />
         <StudentsTable />
+        <Toaster />
       </div>
     </div>
   );
