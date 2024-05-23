@@ -1,4 +1,8 @@
 {
+  "name": "server",
+  "version": "1.0.0",
+  "description": "This project is a simple student management system built with Node.js, Express, and React. It allows users to perform CRUD operations (Create, Read, Update, Delete) on student records.",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
