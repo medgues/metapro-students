@@ -45,3 +45,7 @@ The server is built with Express.js and provides RESTful API endpoints for manag
 ## Client
 
 The client-side of the application is built with React.js. It provides a user-friendly interface for interacting with the student management system. Users can view a list of students, add new students, update existing student information, and delete students.
+
+## deployment
+
+you can find live version in this lking [<Live-Version>](https://metapro-students-ca68be905cfc.herokuapp.com/)
