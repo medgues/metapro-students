@@ -1,25 +1,34 @@
+// Import the Express framework
 const express = require("express");
+
+// Create a router instance to handle routes
 const router = express.Router();
+
+// Import controller functions from the StudentsController module
 const {
   getStudents,
   createStudent,
-  getStudentbyId,
+  getStudentById,
   deleteStudent,
   updateStudent,
 } = require("../controllers/StudentsController");
-//get students
+
+// Define routes and associate them with controller functions
+
+// Route to get all students
 router.get("/", getStudents);
 
-//create student
+// Route to create a new student
 router.post("/", createStudent);
 
-//get student  by id
-router.get("/student/:id", getStudentbyId);
+// Route to get a student by ID
+router.get("/student/:id", getStudentById);
 
-//delete student  by id
+// Route to delete a student by ID
 router.delete("/:id", deleteStudent);
 
-//update student  by id
+// Route to update a student by ID
 router.patch("/:id", updateStudent);
 
+// Export the router to make it available for use in other files
 module.exports = router;

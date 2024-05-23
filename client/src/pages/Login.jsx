@@ -21,21 +21,26 @@ import {
   FormMessage,
 } from "../components/ui/form";
 
+// Schema for form validation using Zod
 const formSchema = z.object({
   email: z.string({ required_error: "Email is required" }).email({
-    message: "must be at valid Email.",
+    message: "Must be a valid email.",
   }),
-  password: z.string({ required_error: "password is required" }).min(5, {
+  password: z.string({ required_error: "Password is required" }).min(5, {
     message: "Must be 5 or more characters long.",
   }),
 });
 
 export default function Component() {
-  let navigate = useNavigate();
+  let navigate = useNavigate(); // Hook for navigation
+
+  // Function to handle form submission
   // eslint-disable-next-line no-unused-vars
   function onSubmit(values) {
-    navigate("/home");
+    navigate("/home"); // Navigate to the home page after form submission
   }
+
+  // Initialize the form with validation schema and default values
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,6 +48,7 @@ export default function Component() {
       password: "",
     },
   });
+
   return (
     <div className="flex flex-col min-h-[100dvh] bg-gray-100 dark:bg-gray-950">
       <header className="px-4 lg:px-6 h-14 flex items-center justify-between">
