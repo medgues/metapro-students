@@ -25,7 +25,15 @@ app.use(express.json());
 // Mount the student router under the "/api/students" path
 app.use("/api/students", studentRouter);
 
-// Start the server and listen on the specified port
+if (
+  process.env.NODE_ENV === "production" ||
+  process.env.NODE_ENV === "staging"
+) {
+  app.use(express.static(path.join(__dirname, "client/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname + "/client/build/index.html"));
+  });
+}
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
