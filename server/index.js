@@ -6,7 +6,7 @@ var cors = require("cors");
 
 // Import Express
 const express = require("express");
-
+const path = require("path");
 // Import the router for handling student-related routes
 const studentRouter = require("./routes/Students");
 
@@ -25,15 +25,11 @@ app.use(express.json());
 // Mount the student router under the "/api/students" path
 app.use("/api/students", studentRouter);
 
-if (
-  process.env.NODE_ENV === "production" ||
-  process.env.NODE_ENV === "staging"
-) {
-  app.use(express.static(path.join(__dirname, "client/build")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname + "/client/build/index.html"));
-  });
-}
+app.use(express.static(path.join(__dirname, "/public")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/client/build/index.html"));
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
